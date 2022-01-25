@@ -1,4 +1,4 @@
-package com.ginger.core.project;
+package com.ginger.core.project.tags;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

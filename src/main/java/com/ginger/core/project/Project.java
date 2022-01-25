@@ -2,7 +2,9 @@ package com.ginger.core.project;
 
 import com.ginger.core.comment.Comment;
 import com.ginger.core.project.payload.ProjectCreateInput;
+import com.ginger.core.project.tags.Tags;
 import com.ginger.core.user.User;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class Project {
+public class Project implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
