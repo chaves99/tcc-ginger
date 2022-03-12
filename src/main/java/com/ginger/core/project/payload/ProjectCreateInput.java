@@ -15,5 +15,7 @@ public class ProjectCreateInput {
 
     private String name;
 
+    private String description;
+
     private List<Long> tagIds;
 }

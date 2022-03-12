@@ -44,19 +44,17 @@ public class ProjectController {
 
     @GetMapping("{id}")
     public ResponseEntity<List<Project>> getAllByUser(@PathVariable Long id) {
-        Example<Project> example = Example.of(Project.builder().user(User.builder().id(id).build()).build());
-        List<Project> projects = this.projectRepository.findAll(example);
-        System.err.println(projects);
+        List<Project> projects = this.projectRepository
+                .findAll(Example.of(Project.builder().user(User.builder().id(id).build()).build()));
         if (projects.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return  ResponseEntity.ok(projects);
+        return ResponseEntity.ok(projects);
     }
 
     @PostMapping("create")
     public ResponseEntity<Project> create(@RequestBody ProjectCreateInput input) {
-        Project project = new Project();
-        project.setName(input.getName());
+        Project project = Project.from(input);
         project.setUser(userRepository.getById(input.getUserId()));
         project.setTags(tagsRepository.findByIdIn(input.getTagIds()));
         project = projectRepository.save(project);
