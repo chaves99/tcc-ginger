@@ -14,6 +14,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @RequestMapping(value = "project")
 @RestController
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -50,6 +53,19 @@ public class ProjectController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(projects);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        try {
+            this.projectRepository.deleteById(id);
+        } catch (Exception e) {
+            log.debug("delete - Exception:{}", e);
+            return ResponseEntity //
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR) //
+                    .build();
+        }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("create")
