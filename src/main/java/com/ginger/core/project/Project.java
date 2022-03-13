@@ -53,6 +53,9 @@ public class Project implements Serializable {
     @ManyToOne
     private User user;
 
+    @ManyToOne
+    private User orientador;
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToMany
     @JoinTable(name = "project_tags",

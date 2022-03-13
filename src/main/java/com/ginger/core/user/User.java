@@ -48,6 +48,9 @@ public class User implements Serializable {
     private UserType type;
 
     @OneToMany
+    private List<Project> orientedProjects;
+
+    @OneToMany
     private List<Project> projects;
 
     @OneToMany
