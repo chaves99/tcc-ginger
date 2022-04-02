@@ -1,31 +1,22 @@
 package com.ginger.core.project;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.ginger.core.project.payload.ProjectCreateInput;
+import com.ginger.core.project.service.ProjectService;
 import com.ginger.core.project.tags.TagsRepository;
 import com.ginger.core.user.User;
 import com.ginger.core.user.UserRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @RequestMapping(value = "project")
@@ -34,22 +25,17 @@ import lombok.extern.log4j.Log4j2;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProjectController {
 
-    ProjectRepository projectRepository;
-
-    UserRepository userRepository;
-
-    TagsRepository tagsRepository;
+    ProjectService projectService;
 
     @GetMapping
     public ResponseEntity<List<Project>> getAll() {
-        return ResponseEntity.ok(projectRepository.findAll());
+        return ResponseEntity.ok(projectService.getAll());
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<List<Project>> getAllByUser(@PathVariable Long id) {
-        List<Project> projects = this.projectRepository
-                .findAll(Example.of(Project.builder().user(User.builder().id(id).build()).build()));
-        if (projects.isEmpty()) {
+        List<Project> projects = projectService.findByUserId(id);
+        if (projects == null || projects.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(projects);
@@ -58,9 +44,9 @@ public class ProjectController {
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         try {
-            this.projectRepository.deleteById(id);
+             this.projectService.deleteById(id);
         } catch (Exception e) {
-            log.debug("delete - Exception:{}", e);
+            log.debug("delete - Exception:", e);
             return ResponseEntity //
                     .status(HttpStatus.INTERNAL_SERVER_ERROR) //
                     .build();
@@ -70,11 +56,15 @@ public class ProjectController {
 
     @PostMapping("create")
     public ResponseEntity<Project> create(@RequestBody ProjectCreateInput input) {
-        Project project = Project.from(input);
-        project.setUser(userRepository.getById(input.getUserId()));
-        project.setTags(tagsRepository.findByIdIn(input.getTagIds()));
-        project = projectRepository.save(project);
+        Project project = projectService.createNew(input);
         return ResponseEntity.status(HttpStatus.CREATED).body(project);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Project> getById(@PathVariable Long id) {
+        Optional<Project> project = projectService.findById(id);
+        if (project.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(project.get());
     }
 
 }

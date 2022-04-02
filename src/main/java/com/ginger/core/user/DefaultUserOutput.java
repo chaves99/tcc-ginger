@@ -13,6 +13,8 @@ public class DefaultUserOutput {
 
     private String name;
 
+    private String lastName;
+
     private String username;
 
     private String email;
@@ -20,6 +22,7 @@ public class DefaultUserOutput {
     public DefaultUserOutput fromUser(User user) {
         setId(user.getId());
         setName(user.getName());
+        setLastName(user.getLastName());
         setUsername(user.getUsername());
         setEmail(user.getEmail());
         return this;

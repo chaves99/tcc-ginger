@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ginger.core.project.Project;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +33,7 @@ public class Tags implements Serializable {
     @Column
     private String description;
 
+    @JsonIgnoreProperties("tags")
     @ManyToMany(mappedBy = "tags")
     private List<Project> project;
 

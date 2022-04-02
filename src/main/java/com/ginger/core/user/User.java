@@ -32,6 +32,9 @@ public class User implements Serializable {
     private Long id;
 
     @Column
+    private String lastName;
+
+    @Column
     private String name;
 
     @Column(unique = true)

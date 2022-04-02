@@ -11,19 +11,25 @@ public class CreateUserInput {
 
     private String name;
 
+    private String lastName;
+
     private String username;
 
     private String password;
 
     private String email;
 
+    private UserType userType;
+
     public User toUser() {
-        User user = new User();
-        user.setUsername(username);
-        user.setName(name);
-        user.setPassword(password);
-        user.setEmail(email);
-        return user;
+        return User.builder()
+                .username(username)
+                .name(name)
+                .lastName(lastName)
+                .password(password)
+                .email(email)
+                .type(userType)
+                .build();
     }
 
 }
